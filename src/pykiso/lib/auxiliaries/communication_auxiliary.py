@@ -22,6 +22,7 @@ CommunicationAuxiliary
 """
 
 import logging
+import resource
 
 from pykiso import AuxiliaryInterface, CChannel, Message
 
@@ -61,8 +62,15 @@ class CommunicationAuxiliary(AuxiliaryInterface):
         log.debug(
             f"retrieving message in {self} (blocking={blocking}, timeout={timeout_in_s})"
         )
-        msg = self.wait_and_get_report(blocking=blocking, timeout_in_s=timeout_in_s)
-        log.debug(f"retrieved message '{msg}' in {self}")
+        response = self.wait_and_get_report(
+            blocking=blocking, timeout_in_s=timeout_in_s
+        )
+        log.debug(f"retrieved message '{response}' in {self}")
+        msg = response.get("msg")
+        remote_id = response.get("remote_id")
+        # stay with the old return type to not making a breaking change
+        if remote_id is not None:
+            return (msg, remote_id)
         return msg
 
     def _create_auxiliary_instance(self) -> bool:
@@ -87,6 +95,7 @@ class CommunicationAuxiliary(AuxiliaryInterface):
         :return: always True
         """
         log.info("Delete auxiliary instance")
+        log.info(f"RESOURCE COM-AUX -----------> {resource.getrusage(resource.RUSAGE_SELF)}")
         try:
             self.channel.close()
         except Exception:
@@ -129,8 +138,10 @@ class CommunicationAuxiliary(AuxiliaryInterface):
         """
         try:
             rcv_data = self.channel.cc_receive(timeout=0, raw=True)
-            log.debug(f"received message '{rcv_data}' from {self.channel}")
-            return rcv_data
+            msg = rcv_data.get("msg")
+            if msg is not None:
+                log.debug(f"received message '{rcv_data}' from {self.channel}")
+                return rcv_data
         except Exception:
             log.exception(
                 f"encountered error while receiving message via {self.channel}"
