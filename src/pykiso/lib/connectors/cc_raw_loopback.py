@@ -19,12 +19,14 @@ Loopback CChannel
 
 """
 
+import logging
 from collections import deque
 from typing import Dict
 
 from pykiso import CChannel
 from pykiso.types import MsgType
 
+log = logging.getLogger(__name__)
 
 class CCLoopback(CChannel):
     """Loopback CChannel for testing purposes.
@@ -63,6 +65,11 @@ class CCLoopback(CChannel):
         """
         try:
             recv_msg = self._loopback_buffer.popleft()
+            # Put here, the callback will be triggered only if no error occur above
+            if self.callback:
+                self.callback()
+            else:
+                log.warning("Receive was called but callback not set!")
             return {"msg": recv_msg}
         except IndexError:
             return {"msg": None}

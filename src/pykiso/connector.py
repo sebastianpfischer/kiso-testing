@@ -25,6 +25,7 @@ import pathlib
 import threading
 
 from .types import MsgType, PathType
+from typing import Callable
 
 
 class Connector(abc.ABC):
@@ -39,6 +40,7 @@ class Connector(abc.ABC):
         :param name: alias for the connector, used for ``repr`` and logging.
         """
         super().__init__()
+        self.callback = None
         self.name = name
 
     def __repr__(self):
@@ -79,7 +81,7 @@ class CChannel(Connector):
         else:
             self._lock = threading.RLock()
 
-    def open(self) -> None:
+    def open(self, callback: Callable = None) -> None:
         """Open a thread-safe channel.
 
         :raise ConnectionRefusedError: when lock acquire failed
@@ -87,12 +89,14 @@ class CChannel(Connector):
         # If we successfully lock the channel, open it
         if self._lock.acquire(False):
             self._cc_open()
+            self.callback = callback
         else:
             raise ConnectionRefusedError
 
     def close(self) -> None:
         """Close a thread-safe channel."""
         # Close channel and release lock
+        self.callback = None
         self._cc_close()
         self._lock.release()
 
@@ -133,7 +137,7 @@ class CChannel(Connector):
 
     @abc.abstractmethod
     def _cc_open(self):
-        """Open the channel."""
+        """Open the channel, if self.callback exist, handle it"""
         pass
 
     @abc.abstractmethod
