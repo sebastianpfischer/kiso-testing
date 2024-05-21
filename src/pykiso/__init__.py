@@ -27,32 +27,15 @@ except ImportError:  # for Python<3.8
 # get version from package metadata to automatically set the version dunder
 __version__ = metadata.version(__name__)
 
-from . import (
-    cli,
-    config_parser,
-    connector,
-    logging_initializer,
-    message,
-    types,
-)
+from . import cli, config_parser, connector, logging_initializer, message, types
 from .auxiliary import AuxiliaryInterface
 from .connector import CChannel, Flasher
-from .exceptions import (
-    AuxiliaryCreationError,
-    InvalidTestModuleName,
-    PykisoError,
-    TestCollectionError,
-)
+from .exceptions import AuxiliaryCreationError, InvalidTestModuleName, PykisoError, TestCollectionError
 from .interfaces.dt_auxiliary import DTAuxiliaryInterface
 from .logging_initializer import disable_logging
 from .message import Message
 from .test_coordinator import test_case, test_message_handler, test_suite
-from .test_coordinator.test_case import (
-    BasicTest,
-    RemoteTest,
-    define_test_parameters,
-    retry_test_case,
-)
+from .test_coordinator.test_case import BasicTest, RemoteTest, define_test_parameters, retry_test_case
 from .test_coordinator.test_execution import abort
 from .test_coordinator.test_suite import (
     BasicTestSuiteSetup,
@@ -62,3 +45,12 @@ from .test_coordinator.test_suite import (
 )
 
 logging_initializer.add_internal_log_levels()
+
+# Experimental - load configuration and create auxiliaries
+from .config_parser import parse_config
+from .test_setup.config_registry import ConfigRegistry
+
+
+def load_config(config_file: str):
+    cfg = parse_config(config_file)
+    ConfigRegistry.register_aux_con(cfg)

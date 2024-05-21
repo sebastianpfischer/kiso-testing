@@ -24,7 +24,9 @@ import logging
 import queue
 import threading
 from enum import Enum, unique
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Self
+
+from pykiso.test_setup.config_registry import ConfigRegistry
 
 from .exceptions import AuxiliaryCreationError, AuxiliaryNotStarted
 from .logging_initializer import add_internal_log_levels, initialize_loggers
@@ -47,6 +49,15 @@ class AuxiliaryInterface(abc.ABC):
     << double threaded >> auxiliary, simply encapsulate two threads one
     for the reception and one for the transmmission.
     """
+
+    @classmethod
+    def get_instance(cls, name: str) -> Self:
+        """Experimental - Get an auxiliary instance by its name."""
+        auxiliary = ConfigRegistry.get_aux_by_alias(name)
+        # Verify if the auxiliary is of the right type
+        if not isinstance(auxiliary, cls):
+            raise ValueError(f"Requested auxiliary {name} is not of type {cls}")
+        return auxiliary
 
     def __init__(
         self,
