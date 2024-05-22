@@ -75,7 +75,6 @@ instrument = ["PyVISA", "PyVISA-py"]
 serial = ["pyserial"]
 grpc = ["grpcio", "protobuf"]
 testrail = ["rich", "requests"]
-pykitest = ["black", "isort"]
 all = [
     "pylink-square",
     "pykiso-python-uds",
@@ -111,7 +110,6 @@ ruff = "0.2.1"
 pykiso = 'pykiso.cli:main'
 pykiso-tags = 'pykiso.tool.show_tag:main'
 instrument-control = 'pykiso.lib.auxiliaries.instrument_control_auxiliary.instrument_control_cli:main'
-pykitest = 'pykiso.tool.pykiso_to_pytest.cli:main'
 testrail = "pykiso.tool.testrail.cli:cli_testrail"
 
 [tool.poetry.plugins]

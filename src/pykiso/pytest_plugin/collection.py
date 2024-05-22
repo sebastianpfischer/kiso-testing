@@ -29,8 +29,8 @@ import pytest
 from _pytest.fixtures import FixtureDef
 from _pytest.unittest import TestCaseFunction
 
+from pykiso.auxiliary import AuxiliaryInterface
 from pykiso.config_parser import parse_config
-from pykiso.interfaces.dt_auxiliary import DTAuxiliaryInterface
 from pykiso.test_coordinator.test_execution import apply_tag_filter
 from pykiso.test_coordinator.test_suite import tc_sort_key
 from pykiso.test_setup.config_registry import ConfigRegistry
@@ -48,19 +48,19 @@ if TYPE_CHECKING:
 
 @export
 @pytest.hookimpl
-def pytest_auxiliary_start(aux: DTAuxiliaryInterface):
+def pytest_auxiliary_start(aux: AuxiliaryInterface):
     return aux.create_instance()
 
 
 @export
 @pytest.hookimpl
-def pytest_auxiliary_stop(aux: DTAuxiliaryInterface):
+def pytest_auxiliary_stop(aux: AuxiliaryInterface):
     return aux.delete_instance()
 
 
 @export
 @pytest.hookimpl
-def pytest_auxiliary_load(aux: DTAuxiliaryInterface | str):
+def pytest_auxiliary_load(aux: AuxiliaryInterface | str):
     if isinstance(aux, str):
         aux = ConfigRegistry.get_aux_by_alias(aux)
     return aux

@@ -21,16 +21,16 @@ from __future__ import annotations
 
 import pytest
 
-from pykiso.interfaces.dt_auxiliary import DTAuxiliaryInterface
+from pykiso.auxiliary import AuxiliaryInterface
 
 
 @pytest.hookspec(firstresult=True)
-def pytest_auxiliary_load(aux: str) -> DTAuxiliaryInterface | None:
+def pytest_auxiliary_load(aux: str) -> AuxiliaryInterface | None:
     """:meta private:"""
 
 
 @pytest.hookspec(firstresult=True)
-def pytest_auxiliary_start(aux: DTAuxiliaryInterface) -> bool | None:
+def pytest_auxiliary_start(aux: AuxiliaryInterface) -> bool | None:
     """Called to start an auxiliary.
 
     Stops at first non-None result.
@@ -41,7 +41,7 @@ def pytest_auxiliary_start(aux: DTAuxiliaryInterface) -> bool | None:
 
 
 @pytest.hookspec(firstresult=True)
-def pytest_auxiliary_stop(aux: DTAuxiliaryInterface) -> bool | None:
+def pytest_auxiliary_stop(aux: AuxiliaryInterface) -> bool | None:
     """Called to stop an auxiliary.
 
     Stops at first non-None result.
