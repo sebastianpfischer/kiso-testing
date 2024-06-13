@@ -18,5 +18,7 @@ if __name__ == "__main__":
     sender.send_message("Hello, World!")
     assert receiver.receive_message() == "Hello, World!"
 
+    print("Test passed!")
+
     sender.stop()
     receiver.stop()
