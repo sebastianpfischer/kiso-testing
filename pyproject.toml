@@ -35,7 +35,7 @@ classifiers = [
 python = "^3.9"
 brainstem = "*"
 PyYAML = "^6.0"
-robotframework = "3.2.2"
+robotframework = "7.1.1"
 unittest-xml-reporting = "^3.2.0"
 click = ">=7.0.0,<9.0.0"
 tabulate = ">=0.8.9,<0.10.0"
